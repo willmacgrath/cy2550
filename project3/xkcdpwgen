@@ -1,0 +1,71 @@
+import sys, random, argparse
+
+def main(argv):
+   parser = argparse.ArgumentParser(
+                    prog='xkcdpwgen',
+                    description='This Program Generates a Secure Password')
+   parser.add_argument('-w', '--words', help = 'include WORDS words in the password (default=4)', default=4, dest='words')
+   parser.add_argument('-c', '--caps', help = 'capitalize the first letter of CAPS random words (default=0)', default=0, dest='caps')
+   parser.add_argument('-n', '--numbers', help = 'NUMBERS insert NUMBERS random numbers in the password (default=0)', default=0, dest='numbers')
+   parser.add_argument('-s', '--symbols', help = 'SYMBOLS insert SYMBOLS random symbols in the password (default=0)', default=0, dest='symbols')
+   
+   args = parser.parse_args()
+
+   words = int(args.words)
+   caps = int(args.caps)
+   numbers = int(args.numbers)
+   symbols = int(args.symbols)
+
+   if (caps > words):
+      print ("Value of Caps cannot be larger than the value of Words")
+      sys.exit()
+   if (numbers > words):
+      print ("Value of Numbers cannot be larger than the value of Words")
+      sys.exit() 
+   if (symbols > words):
+      print ("Value of Symbols cannot be larger than the value of Words")
+      sys.exit()
+   
+   numbers_list = [0,1,2,3,4,5,6,7,8,9]
+   symbols_list = ['~','!','@','#','$','%','^','&','*','.',':',';']
+   
+   capped_words = random.sample(range(0, words), caps)
+   numbered_words = random.sample(range(0, words), numbers)
+   symboled_words = random.sample(range(0, words), symbols)
+
+   password = ''
+   for i in range(0, words):
+      words = words - 1
+      with open("words.txt", "r") as file:
+         allText = file.read()
+         wordslist = list(map(str, allText.split()))
+         new_word = random.choice(wordslist)
+
+         if i in capped_words:
+            new_word = new_word.capitalize()
+
+         if i in numbered_words:
+            front_or_back = random.choice([0, 1])
+            if front_or_back == 0:
+               new_word = str(random.choice(numbers_list)) + new_word
+            else:
+               new_word = new_word + str(random.choice(numbers_list))
+
+         if i in symboled_words:
+            front_or_back = random.choice([0, 1])
+            if front_or_back == 0:
+               new_word = str(random.choice(symbols_list)) + new_word
+            else:
+               new_word = new_word + str(random.choice(symbols_list))
+
+         password = password + new_word
+   print (password)
+ 
+
+
+   
+
+
+if __name__ == "__main__":
+   main(sys.argv[1:])
+
